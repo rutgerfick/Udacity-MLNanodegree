@@ -4,3 +4,4 @@ These are the submitted projects for the Udacity Machine learning Nanodegree:
 - [Second introduction project](https://github.com/rutgerfick/Udacity-MLNanodegree/blob/master/boston_housing/boston_housing.ipynb) to predict prices in the Boston housing market.
 - [Supervised learning project](https://github.com/rutgerfick/Udacity-MLNanodegree/blob/master/finding_donors/finding_donors.ipynb) to predict which people are likely donors to fictional CharityML foundation.
 - [Unsupervised learning project](https://github.com/rutgerfick/Udacity-MLNanodegree/blob/master/customer_segments/customer_segments.ipynb) to predict customer segments based on their product purchases.
+- [Reinforcement learning project](https://github.com/rutgerfick/Udacity-MLNanodegree/blob/master/smartcab/smartcab.ipynb) to train a smartcab to obey the traffic laws and arrive at its destination within a time limit.
