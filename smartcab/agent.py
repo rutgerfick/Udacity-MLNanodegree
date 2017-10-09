@@ -1,5 +1,6 @@
 import random
 import math
+import numpy as np
 from environment import Agent, Environment
 from planner import RoutePlanner
 from simulator import Simulator
@@ -18,7 +19,7 @@ class LearningAgent(Agent):
         self.Q = dict()          # Create a Q-table which will be a dictionary of tuples
         self.epsilon = epsilon   # Random exploration factor
         self.alpha = alpha       # Learning factor
-	self.t = 1
+	self.t = 0
 
         ###########
         ## TO DO ##
@@ -42,8 +43,12 @@ class LearningAgent(Agent):
         # If 'testing' is True, set epsilon and alpha to 0
 	
 	if not testing:
-	    #self.epsilon = self.epsilon - 0.05
-	    self.epsilon = 1. / self.t
+	    self.epsilon = self.epsilon - 0.005
+	    #self.epsilon = 1. / (self.t + 1)
+	    #self.epsilon = 1. / (self.t + 1) ** 2
+	    #self.epsilon = np.exp(-.002 * self.t ** 2)
+	    #self.epsilon = self.alpha ** self.t
+	    #self.epsilon = np.exp(-self.alpha * self.t)
 	    self.t += 1
 	else:
 	    self.epsilon = 0.
@@ -70,7 +75,7 @@ class LearningAgent(Agent):
         # With the hand-engineered features, this learning process gets entirely negated.
         
         # Set 'state' as a tuple of relevant data for the agent
-	state = (waypoint, inputs['light'])
+	state = (waypoint, inputs['light'], inputs['left'], inputs['oncoming'])
 
         return state
 
@@ -127,13 +132,16 @@ class LearningAgent(Agent):
 		else:
 		    action = actions_maxQ[0]
 	else: # if we're not training.
-	    Q_state = self.Q[state]
-	    max_value = max(Q_state.values());
-	    actions_maxQ = [key for key, value in Q_state.items() if value == max_value]
-	    if len(actions_maxQ) > 1:
-		action = random.sample(actions_maxQ, 1)[0]
+	    if len(self.Q)>0:
+	        Q_state = self.Q[state]
+	        max_value = max(Q_state.values());
+	        actions_maxQ = [key for key, value in Q_state.items() if value == max_value]
+	        if len(actions_maxQ) > 1:
+	            action = random.sample(actions_maxQ, 1)[0]
+	        else:
+		    action = actions_maxQ[0]
 	    else:
-		action = actions_maxQ[0]
+                action = self.valid_actions[random.randint(0, 3)]
 
         ########### 
         ## TO DO ##
@@ -155,7 +163,8 @@ class LearningAgent(Agent):
         ###########
         # When learning, implement the value iteration update rule
         #   Use only the learning rate 'alpha' (do not use the discount factor 'gamma')
-	self.Q[state][action] = (1. - self.alpha) * self.Q[state][action] + self.alpha * reward
+	if self.learning:
+	    self.Q[state][action] = (1. - self.alpha) * self.Q[state][action] + self.alpha * reward
         return
 
 
